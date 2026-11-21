@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>miji</title>
+    <link rel="stylesheet" href="/miji-app/fonts/fonts.css" />
+    <script type="module" crossorigin src="/miji-app/assets/index-BtPiUiYR.js"></script>
+    <link rel="stylesheet" crossorigin href="/miji-app/assets/index-ZOMqJjQB.css">
+  </head>
+  <body>
+    <canvas id="board" tabindex="0"></canvas>
+    <textarea id="text-editor" spellcheck="false" dir="auto"></textarea>
+
+    <div class="views" id="views">
+      <button data-view="canvas">Холст</button>
+      <button data-view="plan">Планирование</button>
+    </div>
+
+    <div class="toolbar" id="toolbar">
+      <button class="canvas-only" data-tool="select" title="Выделение (V)">
+        <svg viewBox="0 0 24 24"><path d="M5 3l14 8-6 2-3 6z" /></svg>
+      </button>
+      <button class="canvas-only" data-tool="rect" title="Квадрат (R)">
+        <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2" /></svg>
+      </button>
+      <button class="canvas-only" data-tool="arrow" title="Стрелка (A)">
+        <svg viewBox="0 0 24 24"><path d="M5 19L19 5M10 5h9v9" /></svg>
+      </button>
+      <span class="sep canvas-only"></span>
+      <button id="undo" title="Отменить (Ctrl+Z)">
+        <svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 010 12h-3" /></svg>
+      </button>
+      <button id="redo" title="Повторить (Ctrl+Shift+Z)">
+        <svg viewBox="0 0 24 24"><path d="M15 14l5-5-5-5M20 9H10a6 6 0 000 12h3" /></svg>
+      </button>
+    </div>
+
+    <div class="panel" id="panel">
+      <div class="row"><span>Рендер</span><b id="backend">…</b></div>
+      <div class="row"><span>Кадров/с</span><b id="fps">–</b></div>
+      <div class="row"><span>Кадр, мс</span><b id="ms">–</b></div>
+      <div class="row"><span id="counts-label">Фигур / стрелок</span><b id="counts">–</b></div>
+      <div class="row"><span>Видно / инстансов</span><b id="visible">–</b></div>
+      <div class="row"><span>Масштаб</span><b id="zoom">100%</b></div>
+      <div class="buttons canvas-only">
+        <button id="add1k">+1 000</button>
+        <button id="add10k">+10 000</button>
+        <button id="bench">Бенчмарк 5 с</button>
+      </div>
+    </div>
+
+    <div class="help canvas-only">
+      Двойной клик — текст · тяни синие точки — стрелка · колесо — зум · правая / средняя кнопка или
+      пробел — панорама · Del — удалить · Ctrl+Z / Ctrl+Shift+Z
+    </div>
+    <div class="help plan-only">
+      Тяни карточку — спринт и порядок · синяя точка — провести связь · клик по стрелке — изменить
+      или удалить · красная стрелка — ошибка плана · значок — статус · «+» — подзадача · Ctrl+Z
+    </div>
+    <div class="error" id="error" hidden></div>
+
+  </body>
+</html>
