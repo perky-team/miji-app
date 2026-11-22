@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>miji</title>
     <link rel="stylesheet" href="/miji-app/fonts/fonts.css" />
-    <script type="module" crossorigin src="/miji-app/assets/index-D15B-Ci1.js"></script>
-    <link rel="stylesheet" crossorigin href="/miji-app/assets/index-C_b8bbMY.css">
+    <script type="module" crossorigin src="/miji-app/assets/index-D7ABVFZ8.js"></script>
+    <link rel="stylesheet" crossorigin href="/miji-app/assets/index-B0Z0o8Ou.css">
   </head>
   <body>
     <canvas id="board" tabindex="0"></canvas>
@@ -14,26 +14,36 @@
 
     <div class="topbar">
       <div class="views project">
-        <button id="menu-toggle" class="icon" title="Меню" aria-haspopup="true">☰</button>
-        <button id="project-name" class="name" title="Карта проекта"></button>
+        <button id="menu-toggle" class="icon" title="Menu" aria-haspopup="true">☰</button>
+        <span id="project-name" class="name"></span>
+        <span class="divider"></span>
+        <button id="crumb-strategy" class="crumb" title="Goals and whether they make it (Esc from the map)">Strategy</button>
+        <span class="tabs" id="strat-tabs" hidden>
+          <button data-level="-2" title="Goals in Now, Next and Later: what and why, in priority order">Goals</button>
+          <button data-level="-3" title="Whether the goals make it: progress, forecast and risks on a timeline">Status</button>
+        </span>
+        <span class="sep">›</span>
+        <button id="crumb-plan" class="crumb" title="Sprints and backlog">Plan</button>
         <span class="sep" id="board-sep" hidden>›</span>
         <span class="board" id="board-name" hidden></span>
         <ul class="menu" id="menu" hidden>
-          <li><button id="archive-toggle">Архив <span class="badge" id="archive-count"></span></button></li>
-          <li><label><input type="checkbox" id="sim" /> Коллеги (демо)</label></li>
-          <li><label><input type="checkbox" id="fps-toggle" /> Показать FPS</label></li>
+          <li><button id="archive-toggle">Archive <span class="badge" id="archive-count"></span></button></li>
+          <li><label><input type="checkbox" id="sim" /> Teammates (demo)</label></li>
+          <li><label><input type="checkbox" id="fps-toggle" /> Show FPS</label></li>
         </ul>
       </div>
       <div class="search">
+        <div class="query-hl" id="query-hl" aria-hidden="true"></div>
         <input
           id="query"
           type="text"
           spellcheck="false"
           autocomplete="off"
-          placeholder="Фильтр задач: status = &quot;В работе&quot; AND assignee = me"
-          title="Фильтр задач (/)"
+          placeholder="Filter issues: status = &quot;In Progress&quot; AND assignee = me"
+          title="Filter issues (/)"
         />
         <span class="count" id="query-count"></span>
+        <button class="clear" id="query-clear" title="Clear the filter" hidden>×</button>
         <div class="query-error" id="query-error" hidden></div>
         <ul class="suggest" id="query-suggest" hidden></ul>
       </div>
@@ -45,51 +55,89 @@
     </div>
 
     <div class="panel" id="panel">
-      <div class="row"><span>Задач / связей</span><b id="counts">–</b></div>
-      <div class="row"><span>Видно / инстансов</span><b id="visible">–</b></div>
-      <div class="row"><span>Масштаб</span><b id="zoom">100%</b></div>
+      <div class="row"><span>Issues / relations</span><b id="counts">–</b></div>
+      <div class="row"><span>Visible / instances</span><b id="visible">–</b></div>
+      <div class="row"><span>Zoom</span><b id="zoom">100%</b></div>
       <div class="row"><span>FPS</span><b id="fps">–</b></div>
     </div>
 
     <aside class="issue-panel" id="issue-panel" hidden>
       <header>
         <nav class="path" id="ip-path"></nav>
-        <button class="icon" id="ip-more" title="Ещё" aria-haspopup="true">⋯</button>
-        <button class="close" id="ip-close" title="Закрыть (Esc)">×</button>
+        <button class="icon" id="ip-more" title="More" aria-haspopup="true">⋯</button>
+        <button class="close" id="ip-close" title="Close (Esc)">×</button>
         <ul class="menu ip-menu" id="ip-menu" hidden>
-          <li><button id="ip-open">Перейти к задаче</button></li>
-          <li><button id="ip-copy">Скопировать ключ</button></li>
+          <li><button id="ip-open">Go to issue</button></li>
+          <li><button id="ip-copy">Copy key</button></li>
           <li class="sep"></li>
-          <li><button id="ip-archive" class="danger" title="Задача уходит в архив и пропадает с холста; Ctrl+Z вернёт">Отменить задачу</button></li>
+          <li><button id="ip-archive" class="danger" title="The issue goes to the archive and leaves the canvas; Ctrl+Z brings it back">Cancel issue</button></li>
         </ul>
       </header>
       <textarea class="title" id="ip-title" rows="1" spellcheck="false"></textarea>
       <div class="props" id="ip-props"></div>
-      <div class="description" id="ip-description"><div class="loading">Загружаю редактор…</div></div>
-      <p class="md-hint">Markdown: **жирный**, # заголовок, - список, `код`</p>
+      <div class="description" id="ip-description"><div class="loading">Loading the editor…</div></div>
+      <p class="md-hint">Markdown: **bold**, # heading, - list, `code`</p>
       <section id="ip-children-box">
-        <h4>Подзадачи <span class="progress" id="ip-progress"></span><button class="add" id="ip-add-sub">+ Новая</button></h4>
+        <h4>Subtasks <span class="progress" id="ip-progress"></span><button class="add" id="ip-add-sub">+ New</button></h4>
         <ul id="ip-children"></ul>
       </section>
       <section id="ip-links-box">
-        <h4>Связи<button class="add" id="ip-add-wait" title="Эта задача ждёт другую">+ ждёт</button><button class="add tight" id="ip-add-block" title="Эта задача блокирует другую">+ блокирует</button></h4>
+        <h4>Relations<button class="add" id="ip-add-wait" title="This issue waits for another">+ waits for</button><button class="add tight" id="ip-add-block" title="This issue blocks another">+ blocks</button></h4>
         <ul id="ip-links"></ul>
       </section>
       <div class="chips" id="ip-reactions"></div>
     </aside>
     <div class="popover" id="ip-pop" hidden>
-      <input id="ip-pop-search" type="text" placeholder="Поиск" spellcheck="false" autocomplete="off" />
+      <input id="ip-pop-search" type="text" placeholder="Search" spellcheck="false" autocomplete="off" />
       <ul id="ip-pop-list"></ul>
     </div>
+    <form class="risk-form" id="risk-form" hidden>
+      <h4>Add a risk</h4>
+      <input id="rf-text" placeholder="What may happen, e.g. the partner API is late" maxlength="120" autocomplete="off" />
+      <label>May cost <input id="rf-days" type="number" min="0" max="999" placeholder="0" /> days</label>
+      <p class="hint">The days push the goal's slow forecast. Leave 0 when not known: the goal is then at risk.</p>
+      <div class="buttons">
+        <button type="button" id="rf-cancel">Cancel</button>
+        <button type="submit" class="primary">Add risk</button>
+      </div>
+    </form>
+    <aside class="issue-panel rel-panel" id="rel-panel" hidden>
+      <header>
+        <nav class="path"><span class="crumb">Relation</span></nav>
+        <button class="close" id="rp-close" title="Close (Esc)">×</button>
+      </header>
+      <div class="rel-ends">
+        <button class="rel-end" id="rp-blocker" title="Go to the issue"></button>
+        <div class="rel-verb">↓ blocks</div>
+        <button class="rel-end" id="rp-blocked" title="Go to the issue"></button>
+      </div>
+      <div class="rel-actions">
+        <button id="rp-swap" title="The blocked issue becomes the blocker">⇅ Swap direction</button>
+        <button id="rp-delete" class="danger" title="Ctrl+Z brings it back">Delete relation</button>
+      </div>
+      <p class="rel-mistake" id="rp-mistake" hidden></p>
+    </aside>
     <aside class="issue-panel archive-panel" id="archive-panel" hidden>
       <header>
-        <span class="key">Архив</span>
-        <span class="crumbs">отменённые задачи</span>
-        <button class="close" id="archive-close" title="Закрыть (Esc)">×</button>
+        <span class="key">Archive</span>
+        <span class="crumbs">canceled issues</span>
+        <button class="close" id="archive-close" title="Close (Esc)">×</button>
       </header>
-      <p class="empty" id="archive-empty">Пусто. Отменить задачу можно в меню её статуса или в панели задачи.</p>
+      <p class="empty" id="archive-empty">Empty. Cancel an issue from its status menu or its panel.</p>
       <ul class="archive-list" id="archive-list"></ul>
     </aside>
+    <div class="insert-menu" id="insert-menu" hidden>
+      <button data-insert="note" title="Note">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 4h14v10l-5 6H5z" fill="#ffe27a" stroke="#c9a227" stroke-width="1.4" stroke-linejoin="round"/><path d="M14 20v-5h5" fill="none" stroke="#c9a227" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      </button>
+      <button data-insert="text" title="Text">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 6V4h14v2M12 4v16M9 20h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <button data-insert="picture" title="Picture">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="9" cy="10" r="1.8" fill="currentColor"/><path d="M4 17l5-5 4 4 3-3 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <input type="file" id="insert-file" accept="image/*" hidden />
     <div class="reactions" id="reactions" hidden></div>
     <div class="error" id="error" hidden></div>
 
