@@ -5,20 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>miji</title>
     <link rel="stylesheet" href="/miji-app/fonts/fonts.css" />
-    <script type="module" crossorigin src="/miji-app/assets/index-C7cxofm1.js"></script>
-    <link rel="stylesheet" crossorigin href="/miji-app/assets/index-BrYLVT9D.css">
+    <script type="module" crossorigin src="/miji-app/assets/index-CvWRQhfS.js"></script>
+    <link rel="stylesheet" crossorigin href="/miji-app/assets/index-BF-f8Q3E.css">
   </head>
   <body>
     <canvas id="board" tabindex="0"></canvas>
     <textarea id="text-editor" spellcheck="false" dir="auto"></textarea>
 
     <div class="topbar">
-      <div class="views" id="views">
-        <button data-mode="map" class="active">Карта</button>
-        <button data-mode="board">Доска</button>
-      </div>
-      <div class="views">
-        <button id="sim" class="active" title="Симуляция коллег для демо">Коллеги</button>
+      <div class="views project">
+        <button id="menu-toggle" class="icon" title="Меню" aria-haspopup="true">☰</button>
+        <button id="project-name" class="name" title="Карта проекта"></button>
+        <span class="sep" id="board-sep" hidden>›</span>
+        <span class="board" id="board-name" hidden></span>
+        <ul class="menu" id="menu" hidden>
+          <li><button id="archive-toggle">Архив <span class="badge" id="archive-count"></span></button></li>
+          <li><label><input type="checkbox" id="sim" /> Коллеги (демо)</label></li>
+          <li><label><input type="checkbox" id="fps-toggle" /> Показать FPS</label></li>
+        </ul>
       </div>
       <div class="search">
         <input
@@ -26,12 +30,18 @@
           type="text"
           spellcheck="false"
           autocomplete="off"
-          placeholder="Поиск, как в JQL: status = &quot;В работе&quot; AND assignee = me   ( / )"
+          placeholder="Фильтр задач: status = &quot;В работе&quot; AND assignee = me"
+          title="Фильтр задач (/)"
         />
         <span class="count" id="query-count"></span>
         <div class="query-error" id="query-error" hidden></div>
         <ul class="suggest" id="query-suggest" hidden></ul>
       </div>
+    </div>
+
+    <div class="people" id="people">
+      <span class="others" id="people-others"></span>
+      <span class="me" id="people-me"></span>
     </div>
 
     <div class="panel" id="panel">
@@ -41,10 +51,6 @@
       <div class="row"><span>FPS</span><b id="fps">–</b></div>
     </div>
 
-    <div class="help">
-      Тяни карточку — спринт и порядок · синяя точка — провести связь · клик по стрелке — изменить
-      или удалить · красная стрелка — ошибка плана · значок — статус · «+» — подзадача · 🙂 — реакция · Ctrl+Z
-    </div>
     <aside class="issue-panel" id="issue-panel" hidden>
       <header>
         <span class="key" id="ip-key"></span>
@@ -65,6 +71,16 @@
       <section id="ip-blocks-box"><h4>Блокирует</h4><ul id="ip-blocks"></ul></section>
       <section id="ip-blocked-box"><h4>Заблокирована</h4><ul id="ip-blocked"></ul></section>
       <section id="ip-reactions-box"><h4>Реакции</h4><div class="chips" id="ip-reactions"></div></section>
+      <footer><button class="archive" id="ip-archive" title="Задача уходит в архив и пропадает с холста; Ctrl+Z вернёт">Отменить задачу</button></footer>
+    </aside>
+    <aside class="issue-panel archive-panel" id="archive-panel" hidden>
+      <header>
+        <span class="key">Архив</span>
+        <span class="crumbs">отменённые задачи</span>
+        <button class="close" id="archive-close" title="Закрыть (Esc)">×</button>
+      </header>
+      <p class="empty" id="archive-empty">Пусто. Отменить задачу можно в меню её статуса или в панели задачи.</p>
+      <ul class="archive-list" id="archive-list"></ul>
     </aside>
     <div class="reactions" id="reactions" hidden></div>
     <div class="error" id="error" hidden></div>
