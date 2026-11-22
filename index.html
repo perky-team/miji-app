@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>miji</title>
     <link rel="stylesheet" href="/miji-app/fonts/fonts.css" />
-    <script type="module" crossorigin src="/miji-app/assets/index-CvWRQhfS.js"></script>
-    <link rel="stylesheet" crossorigin href="/miji-app/assets/index-BF-f8Q3E.css">
+    <script type="module" crossorigin src="/miji-app/assets/index-CQmvie9H.js"></script>
+    <link rel="stylesheet" crossorigin href="/miji-app/assets/index-B71t9BIa.css">
   </head>
   <body>
     <canvas id="board" tabindex="0"></canvas>
@@ -53,26 +53,31 @@
 
     <aside class="issue-panel" id="issue-panel" hidden>
       <header>
-        <span class="key" id="ip-key"></span>
-        <span class="crumbs" id="ip-crumbs"></span>
+        <nav class="path" id="ip-path"></nav>
+        <button class="icon" id="ip-more" title="Ещё" aria-haspopup="true">⋯</button>
         <button class="close" id="ip-close" title="Закрыть (Esc)">×</button>
+        <ul class="menu ip-menu" id="ip-menu" hidden>
+          <li><button id="ip-open">Перейти к задаче</button></li>
+          <li><button id="ip-copy">Скопировать ключ</button></li>
+          <li class="sep"></li>
+          <li><button id="ip-archive" class="danger" title="Задача уходит в архив и пропадает с холста; Ctrl+Z вернёт">Отменить задачу</button></li>
+        </ul>
       </header>
       <textarea class="title" id="ip-title" rows="1" spellcheck="false"></textarea>
-      <div class="fields">
-        <label>Статус</label><select id="ip-status"></select>
-        <label>Исполнитель</label><select id="ip-assignee"></select>
-        <label>Оценка</label><select id="ip-points"></select>
-        <label>Скоуп</label><select id="ip-scope"></select>
-        <label>Спринт</label><span id="ip-sprint"></span>
-      </div>
+      <div class="props" id="ip-props"></div>
       <div class="description" id="ip-description"><div class="loading">Загружаю редактор…</div></div>
-      <section id="ip-parent-box"><h4>Родитель</h4><ul id="ip-parent"></ul></section>
-      <section id="ip-children-box"><h4>Подзадачи</h4><ul id="ip-children"></ul></section>
-      <section id="ip-blocks-box"><h4>Блокирует</h4><ul id="ip-blocks"></ul></section>
-      <section id="ip-blocked-box"><h4>Заблокирована</h4><ul id="ip-blocked"></ul></section>
-      <section id="ip-reactions-box"><h4>Реакции</h4><div class="chips" id="ip-reactions"></div></section>
-      <footer><button class="archive" id="ip-archive" title="Задача уходит в архив и пропадает с холста; Ctrl+Z вернёт">Отменить задачу</button></footer>
+      <p class="md-hint">Markdown: **жирный**, # заголовок, - список, `код`</p>
+      <section id="ip-children-box">
+        <h4>Подзадачи <span class="progress" id="ip-progress"></span><button class="add" id="ip-add-sub">+ Новая</button></h4>
+        <ul id="ip-children"></ul>
+      </section>
+      <section id="ip-links-box"><h4>Связи</h4><ul id="ip-links"></ul></section>
+      <div class="chips" id="ip-reactions"></div>
     </aside>
+    <div class="popover" id="ip-pop" hidden>
+      <input id="ip-pop-search" type="text" placeholder="Поиск" spellcheck="false" autocomplete="off" />
+      <ul id="ip-pop-list"></ul>
+    </div>
     <aside class="issue-panel archive-panel" id="archive-panel" hidden>
       <header>
         <span class="key">Архив</span>
