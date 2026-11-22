@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>miji</title>
     <link rel="stylesheet" href="/miji-app/fonts/fonts.css" />
-    <script type="module" crossorigin src="/miji-app/assets/index-CQmvie9H.js"></script>
-    <link rel="stylesheet" crossorigin href="/miji-app/assets/index-B71t9BIa.css">
+    <script type="module" crossorigin src="/miji-app/assets/index-D15B-Ci1.js"></script>
+    <link rel="stylesheet" crossorigin href="/miji-app/assets/index-C_b8bbMY.css">
   </head>
   <body>
     <canvas id="board" tabindex="0"></canvas>
@@ -71,7 +71,10 @@
         <h4>Подзадачи <span class="progress" id="ip-progress"></span><button class="add" id="ip-add-sub">+ Новая</button></h4>
         <ul id="ip-children"></ul>
       </section>
-      <section id="ip-links-box"><h4>Связи</h4><ul id="ip-links"></ul></section>
+      <section id="ip-links-box">
+        <h4>Связи<button class="add" id="ip-add-wait" title="Эта задача ждёт другую">+ ждёт</button><button class="add tight" id="ip-add-block" title="Эта задача блокирует другую">+ блокирует</button></h4>
+        <ul id="ip-links"></ul>
+      </section>
       <div class="chips" id="ip-reactions"></div>
     </aside>
     <div class="popover" id="ip-pop" hidden>
