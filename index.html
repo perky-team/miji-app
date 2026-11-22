@@ -5,12 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>miji</title>
     <link rel="stylesheet" href="/miji-app/fonts/fonts.css" />
-    <script type="module" crossorigin src="/miji-app/assets/index-D8yoywNC.js"></script>
-    <link rel="stylesheet" crossorigin href="/miji-app/assets/index-BsnXEPsT.css">
+    <script type="module" crossorigin src="/miji-app/assets/index-C7cxofm1.js"></script>
+    <link rel="stylesheet" crossorigin href="/miji-app/assets/index-BrYLVT9D.css">
   </head>
   <body>
     <canvas id="board" tabindex="0"></canvas>
     <textarea id="text-editor" spellcheck="false" dir="auto"></textarea>
+
+    <div class="topbar">
+      <div class="views" id="views">
+        <button data-mode="map" class="active">Карта</button>
+        <button data-mode="board">Доска</button>
+      </div>
+      <div class="views">
+        <button id="sim" class="active" title="Симуляция коллег для демо">Коллеги</button>
+      </div>
+      <div class="search">
+        <input
+          id="query"
+          type="text"
+          spellcheck="false"
+          autocomplete="off"
+          placeholder="Поиск, как в JQL: status = &quot;В работе&quot; AND assignee = me   ( / )"
+        />
+        <span class="count" id="query-count"></span>
+        <div class="query-error" id="query-error" hidden></div>
+        <ul class="suggest" id="query-suggest" hidden></ul>
+      </div>
+    </div>
 
     <div class="panel" id="panel">
       <div class="row"><span>Задач / связей</span><b id="counts">–</b></div>
@@ -23,6 +45,27 @@
       Тяни карточку — спринт и порядок · синяя точка — провести связь · клик по стрелке — изменить
       или удалить · красная стрелка — ошибка плана · значок — статус · «+» — подзадача · 🙂 — реакция · Ctrl+Z
     </div>
+    <aside class="issue-panel" id="issue-panel" hidden>
+      <header>
+        <span class="key" id="ip-key"></span>
+        <span class="crumbs" id="ip-crumbs"></span>
+        <button class="close" id="ip-close" title="Закрыть (Esc)">×</button>
+      </header>
+      <textarea class="title" id="ip-title" rows="1" spellcheck="false"></textarea>
+      <div class="fields">
+        <label>Статус</label><select id="ip-status"></select>
+        <label>Исполнитель</label><select id="ip-assignee"></select>
+        <label>Оценка</label><select id="ip-points"></select>
+        <label>Скоуп</label><select id="ip-scope"></select>
+        <label>Спринт</label><span id="ip-sprint"></span>
+      </div>
+      <div class="description" id="ip-description"><div class="loading">Загружаю редактор…</div></div>
+      <section id="ip-parent-box"><h4>Родитель</h4><ul id="ip-parent"></ul></section>
+      <section id="ip-children-box"><h4>Подзадачи</h4><ul id="ip-children"></ul></section>
+      <section id="ip-blocks-box"><h4>Блокирует</h4><ul id="ip-blocks"></ul></section>
+      <section id="ip-blocked-box"><h4>Заблокирована</h4><ul id="ip-blocked"></ul></section>
+      <section id="ip-reactions-box"><h4>Реакции</h4><div class="chips" id="ip-reactions"></div></section>
+    </aside>
     <div class="reactions" id="reactions" hidden></div>
     <div class="error" id="error" hidden></div>
 
